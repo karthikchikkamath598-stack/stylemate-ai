@@ -5,7 +5,7 @@ import chromadb
 from rag.embeddings import get_embedding_function
 
 COLLECTION_NAME = "stylemate_knowledge"
-CHROMA_PERSIST_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "chroma_db")
+CHROMA_PERSIST_DIR = os.environ.get("CHROMA_PERSIST_DIR") or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "chroma_db")
 
 _chroma_client = None
 _collection = None
@@ -13,8 +13,12 @@ _collection = None
 def get_chroma_client():
     global _chroma_client
     if _chroma_client is None:
-        os.makedirs(CHROMA_PERSIST_DIR, exist_ok=True)
-        _chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+        try:
+            os.makedirs(CHROMA_PERSIST_DIR, exist_ok=True)
+            _chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+        except Exception as e:
+            print(f"Warning: PersistentClient could not be initialized ({e}). Using in-memory chromadb.Client()")
+            _chroma_client = chromadb.Client()
     return _chroma_client
 
 def get_collection():

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "StyleMate AI — Intelligent Personal Fashion Stylist powered by RAG and ChromaDB",
   "scripts": {
+    "build": "cd frontend && npm install && npm run build",
     "dev:backend": "..\\venv\\Scripts\\uvicorn main:app --host 127.0.0.1 --port 8000 --reload",
     "dev:frontend": "npm run dev --prefix frontend -- --host 127.0.0.1 --port 5173",
     "dev": "node run_both.js"
